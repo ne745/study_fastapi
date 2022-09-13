@@ -33,7 +33,7 @@ async def index():
 
 
 @app.post('/bookings')
-async def bookings(bookings: User):
+async def bookings(bookings: Booking):
     return {'bookings': bookings}
 
 
