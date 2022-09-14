@@ -2,21 +2,6 @@ from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
 from database import Base
 
 
-class User(Base):
-    __tablename__ = 'users'
-
-    user_id = Column(Integer, primary_key=True, index=True)
-    user_name = Column(String, unique=True, index=True)
-
-
-class Room(Base):
-    __tablename__ = 'rooms'
-
-    room_id = Column(Integer, primary_key=True, index=True)
-    room_name = Column(String, unique=True, index=True)
-    capacity = Column(Integer)
-
-
 class Booking(Base):
     __tablename__ = 'bookings'
 
@@ -34,3 +19,18 @@ class Booking(Base):
     num_people = Column(Integer)
     start_datetime = Column(DateTime, nullable=False)
     end_datetime = Column(DateTime, nullable=False)
+
+
+class User(Base):
+    __tablename__ = 'users'
+
+    user_id = Column(Integer, primary_key=True, index=True)
+    user_name = Column(String, unique=True, index=True)
+
+
+class Room(Base):
+    __tablename__ = 'rooms'
+
+    room_id = Column(Integer, primary_key=True, index=True)
+    room_name = Column(String, unique=True, index=True)
+    capacity = Column(Integer)
