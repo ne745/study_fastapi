@@ -1,7 +1,7 @@
 import datetime
 import json
-import random
 
+import pandas as pd
 import requests
 import streamlit as st
 
@@ -10,7 +10,7 @@ URL = 'http://localhost:8000'
 
 
 page = st.sidebar.selectbox(
-    'Choose your page', ['booking', 'user', 'room'], index=1)
+    'Choose your page', ['booking', 'user', 'room'], index=0)
 
 if page == 'booking':
     st.title('会議室予約画面')
@@ -38,11 +38,15 @@ if page == 'booking':
             'capacity': room['capacity'],
         }
 
+    st.write('### 会議室一覧')
+    df_rooms = pd.DataFrame(rooms)
+    df_rooms.columns = ['会議室名', '定員', '会議室 ID']
+    st.table(df_rooms)
+
     with st.form(key=page):
-        booking_id: int = random.randint(0, 10)
-        user_id: int = random.randint(0, 10)
-        room_id: int = random.randint(0, 10)
-        num_people: int = st.number_input('人数', step=1)
+        user_name = st.selectbox('予約者名', users_dict.keys())
+        room_name = st.selectbox('会議室名', rooms_dict.keys())
+        num_people: int = st.number_input('人数', step=1, min_value=1)
         date = st.date_input('日付を入力', min_value=datetime.date.today())
         start_time = st.time_input(
             '開始時刻', value=datetime.time(hour=9, minute=0), )
@@ -56,24 +60,32 @@ if page == 'booking':
             year=date.year, month=date.month, day=date.day,
             hour=end_time.hour, minute=end_time.minute
         )
+        submit_button = st.form_submit_button(label='送信')
+
+    if submit_button:
+        user_id = users_dict[user_name]
+        room_id = rooms_dict[room_name]['room_id']
+        capacity = rooms_dict[room_name]['capacity']
         data = {
-            'booking_id': booking_id,
             'user_id': user_id,
             'room_id': room_id,
             'num_people': num_people,
             'start_datetime': start_datetime.isoformat(),
             'end_datetime': end_datetime.isoformat()
         }
-        submit_button = st.form_submit_button(label='送信')
 
-    if submit_button:
-        st.write('## 送信データ')
-        st.json(data)
-
-        st.write('## レスポンス結果')
-        res = requests.post(URL + '/bookings', json.dumps(data))
-        st.write(res.status_code)
-        st.json(res.json())
+        # 予約人数の検証
+        if num_people <= capacity:
+            st.write('## レスポンス結果')
+            res = requests.post(URL + '/bookings', json.dumps(data))
+            if res.status_code == 200:
+                st.success('予約完了')
+            else:
+                st.success('予約失敗')
+                st.write(res.status_code)
+            st.json(res.json())
+        else:
+            st.error(f'{room_name} の定員は {capacity} 名です．')
 
 
 elif page == 'user':
