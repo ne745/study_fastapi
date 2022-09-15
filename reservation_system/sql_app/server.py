@@ -6,7 +6,10 @@ from sqlalchemy.orm import Session
 from sql_app import crud
 from sql_app import models
 from sql_app.database import SessionLocal, engine
-from sql_app.schemas import Booking, User, Room
+from sql_app.schemas import (
+    BookingCreate, UserCreate, RoomCreate,
+    Booking, User, Room
+)
 
 
 models.Base.metadata.create_all(bind=engine)
@@ -31,17 +34,20 @@ def get_db():
 # CREATE #####################
 ##############################
 @app.post('/bookings', response_model=Booking)
-async def create_booking(booking: Booking, db: Session = Depends(get_db)):
+async def create_booking(
+        booking: BookingCreate, db: Session = Depends(get_db)):
     return crud.create_booking(db, booking)
 
 
 @app.post('/users', response_model=User)
-async def create_user(user: User, db: Session = Depends(get_db)):
+async def create_user(
+        user: UserCreate, db: Session = Depends(get_db)):
     return crud.create_user(db, user)
 
 
 @app.post('/rooms', response_model=Room)
-async def create_room(room: Room, db: Session = Depends(get_db)):
+async def create_room(
+        room: RoomCreate, db: Session = Depends(get_db)):
     return crud.create_room(db, room)
 
 
