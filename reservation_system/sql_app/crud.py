@@ -13,8 +13,8 @@ def create_booking(db: Session, booking: schemas.Booking):
         user_id=booking.user_id,
         room_id=booking.room_id,
         num_people=booking.num_people,
-        start_datetime=booking.start_time,
-        end_datetime=booking.end_time
+        start_datetime=booking.start_datetime,
+        end_datetime=booking.end_datetime
     )
     db.add(db_booking)
     db.commit()
