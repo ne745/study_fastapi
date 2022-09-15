@@ -13,7 +13,31 @@ page = st.sidebar.selectbox(
     'Choose your page', ['booking', 'user', 'room'], index=1)
 
 if page == 'booking':
-    st.title('API テスト画面 (予約)')
+    st.title('会議室予約画面')
+
+    # ユーザ一覧の取得
+    url_users = URL + '/users'
+    res = requests.get(url_users)
+    users = res.json()
+
+    # キー: ユーザ名, バリュー: ユーザ ID
+    users_dict = {}
+    for user in users:
+        users_dict[user['user_name']] = user['user_id']
+
+    # 会議室一覧の取得
+    url_rooms = URL + '/rooms'
+    res = requests.get(url_rooms)
+    rooms = res.json()
+
+    # キー: 会議室名, バリュー: 会議室 ID
+    rooms_dict = {}
+    for room in rooms:
+        rooms_dict[room['room_name']] = {
+            'room_id': room['room_id'],
+            'capacity': room['capacity'],
+        }
+
     with st.form(key=page):
         booking_id: int = random.randint(0, 10)
         user_id: int = random.randint(0, 10)
