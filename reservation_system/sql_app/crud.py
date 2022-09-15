@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
-import models
-import schemas
+
+from sql_app import models
+from sql_app import schemas
 
 
 ##############################

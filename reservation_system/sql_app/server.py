@@ -3,10 +3,10 @@ from typing import List
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 
-import crud
-import models
-from database import SessionLocal, engine
-from schemas import Booking, User, Room
+from sql_app import crud
+from sql_app import models
+from sql_app.database import SessionLocal, engine
+from sql_app.schemas import Booking, User, Room
 
 
 models.Base.metadata.create_all(bind=engine)

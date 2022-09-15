@@ -1,5 +1,6 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
-from database import Base
+
+from sql_app.database import Base
 
 
 class Booking(Base):
