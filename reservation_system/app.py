@@ -62,8 +62,6 @@ elif page == 'user':
         submit_button = st.form_submit_button(label='ユーザ登録')
 
     if submit_button:
-        st.write('## 送信データ')
-
         st.write('## レスポンス結果')
         res = requests.post(URL + '/users', json.dumps(data))
 
@@ -75,23 +73,23 @@ elif page == 'user':
         st.json(res.json())
 
 elif page == 'room':
-    st.title('API テスト画面 (会議室)')
+    st.title('会議室登録画面')
     with st.form(key=page):
-        room_id: int = random.randint(0, 10)
         room_name: str = st.text_input('会議室名', max_chars=12)
         capacity: int = st.number_input('定員', step=1)
         data = {
-            'room_id': room_id,
             'room_name': room_name,
             'capacity': capacity
         }
-        submit_button = st.form_submit_button(label='送信')
+        submit_button = st.form_submit_button(label='会議室登録')
 
     if submit_button:
-        st.write('## 送信データ')
-        st.json(data)
-
         st.write('## レスポンス結果')
         res = requests.post(URL + '/rooms', json.dumps(data))
-        st.write(res.status_code)
+
+        if res.status_code == 200:
+            st.success('ユーザ登録完了')
+        else:
+            st.success('ユーザ登録失敗')
+            st.write(res.status_code)
         st.json(res.json())
