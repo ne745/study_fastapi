@@ -61,13 +61,16 @@ if page == 'booking':
         }
 
     # ID -> 値に変更
-    to_user_name = lambda x: users_id[x]
-    to_room_name = lambda x: rooms_id[x]['room_name']
-    to_datetime = lambda x: datetime.datetime.fromisoformat(x).strftime('%Y/%m/%d %H:%M')
+    to_user_name = lambda x: users_id[x]  # noqa: E731
+    to_room_name = lambda x: rooms_id[x]['room_name']  # noqa: E731
+    to_datetime = lambda x: \
+        datetime.datetime.fromisoformat(x) \
+        .strftime('%Y/%m/%d %H:%M')  # noqa: E731
 
     df_bookings['user_id'] = df_bookings['user_id'].map(to_user_name)
     df_bookings['room_id'] = df_bookings['room_id'].map(to_room_name)
-    df_bookings['start_datetime'] = df_bookings['start_datetime'].map(to_datetime)
+    df_bookings['start_datetime'] = \
+        df_bookings['start_datetime'].map(to_datetime)
     df_bookings['end_datetime'] = df_bookings['end_datetime'].map(to_datetime)
 
     df_bookings = df_bookings.rename(columns={
