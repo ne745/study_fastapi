@@ -43,6 +43,14 @@ if page == 'booking':
     df_rooms.columns = ['会議室名', '定員', '会議室 ID']
     st.table(df_rooms)
 
+    # 会議室一覧の取得
+    url_bookings = URL + '/bookings'
+    res = requests.get(url_bookings)
+    bookings = res.json()
+    df_bookings = pd.DataFrame(bookings)
+    st.write('### 予約一覧')
+    st.table(df_bookings)
+
     with st.form(key=page):
         user_name = st.selectbox('予約者名', users_dict.keys())
         room_name = st.selectbox('会議室名', rooms_dict.keys())
