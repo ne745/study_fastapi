@@ -21,9 +21,9 @@ if page == 'booking':
     users = res.json()
 
     # キー: ユーザ名, バリュー: ユーザ ID
-    users_dict = {}
+    users_name = {}
     for user in users:
-        users_dict[user['user_name']] = user['user_id']
+        users_name[user['user_name']] = user['user_id']
 
     # 会議室一覧の取得
     url_rooms = URL + '/rooms'
@@ -31,9 +31,9 @@ if page == 'booking':
     rooms = res.json()
 
     # キー: 会議室名, バリュー: 会議室 ID
-    rooms_dict = {}
+    rooms_name = {}
     for room in rooms:
-        rooms_dict[room['room_name']] = {
+        rooms_name[room['room_name']] = {
             'room_id': room['room_id'],
             'capacity': room['capacity'],
         }
@@ -48,12 +48,34 @@ if page == 'booking':
     res = requests.get(url_bookings)
     bookings = res.json()
     df_bookings = pd.DataFrame(bookings)
+
+    users_id = {}
+    for user in users:
+        users_id[user['user_id']] = user['user_name']
+
+    rooms_id = {}
+    for room in rooms:
+        rooms_id[room['room_id']] = {
+            'room_name': room['room_name'],
+            'capacity': room['capacity'],
+        }
+
+    # ID -> 値に変更
+    to_user_name = lambda x: users_id[x]
+    to_room_name = lambda x: rooms_id[x]['room_name']
+    to_datetime = lambda x: datetime.datetime.fromisoformat(x).strftime('%Y/%m/%d %H:%M')
+
+    df_bookings['user_id'] = df_bookings['user_id'].map(to_user_name)
+    df_bookings['room_id'] = df_bookings['room_id'].map(to_room_name)
+    df_bookings['start_datetime'] = df_bookings['start_datetime'].map(to_datetime)
+    df_bookings['end_datetime'] = df_bookings['end_datetime'].map(to_datetime)
+
     st.write('### 予約一覧')
     st.table(df_bookings)
 
     with st.form(key=page):
-        user_name = st.selectbox('予約者名', users_dict.keys())
-        room_name = st.selectbox('会議室名', rooms_dict.keys())
+        user_name = st.selectbox('予約者名', users_name.keys())
+        room_name = st.selectbox('会議室名', rooms_name.keys())
         num_people: int = st.number_input('人数', step=1, min_value=1)
         date = st.date_input('日付を入力', min_value=datetime.date.today())
         start_time = st.time_input(
@@ -71,9 +93,9 @@ if page == 'booking':
         submit_button = st.form_submit_button(label='送信')
 
     if submit_button:
-        user_id = users_dict[user_name]
-        room_id = rooms_dict[room_name]['room_id']
-        capacity = rooms_dict[room_name]['capacity']
+        user_id = users_name[user_name]
+        room_id = rooms_name[room_name]['room_id']
+        capacity = rooms_name[room_name]['capacity']
         data = {
             'user_id': user_id,
             'room_id': room_id,
