@@ -168,7 +168,7 @@ elif page == 'user':
         if res.status_code == 200:
             st.success('ユーザ登録完了')
         else:
-            st.success('ユーザ登録失敗')
+            st.error('ユーザ登録失敗')
             st.write(res.status_code)
         st.json(res.json())
 
@@ -190,6 +190,6 @@ elif page == 'room':
         if res.status_code == 200:
             st.success('会議室登録完了')
         else:
-            st.success('会議室登録失敗')
+            st.error('会議室登録失敗')
             st.write(res.status_code)
         st.json(res.json())
