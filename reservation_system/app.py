@@ -122,6 +122,10 @@ if page == 'booking':
         elif start_time >= end_time:
             # 開始時刻修了時刻の検証
             st.error('開始時刻が修了時刻より遅く設定されています．')
+        elif start_time < datetime.time(hour=9, minute=0):
+            st.error('利用可能時間は 9:00 ~ 20:00 になります．')
+        elif end_time > datetime.time(hour=20, minute=0):
+            st.error('利用可能時間は 9:00 ~ 20:00 になります．')
         else:
             st.write('## レスポンス結果')
             res = requests.post(URL + '/bookings', json.dumps(data))
