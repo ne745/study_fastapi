@@ -104,7 +104,7 @@ if page == 'booking':
         num_people: int = st.number_input('人数', step=1, min_value=1)
         date = st.date_input('日付を入力', min_value=datetime.date.today())
         start_time = st.time_input(
-            '開始時刻', value=datetime.time(hour=9, minute=0), )
+            '開始時刻', value=datetime.time(hour=9, minute=0))
         end_time = st.time_input(
             '修了時刻', value=datetime.time(hour=20, minute=0))
         start_datetime = datetime.datetime(
@@ -174,7 +174,7 @@ elif page == 'room':
     st.title('会議室登録画面')
     with st.form(key=page):
         room_name: str = st.text_input('会議室名', max_chars=12)
-        capacity: int = st.number_input('定員', step=1)
+        capacity: int = st.number_input('定員', step=1, min_value=1)
         data = {
             'room_name': room_name,
             'capacity': capacity
@@ -186,8 +186,8 @@ elif page == 'room':
         res = requests.post(URL + '/rooms', json.dumps(data))
 
         if res.status_code == 200:
-            st.success('ユーザ登録完了')
+            st.success('会議室登録完了')
         else:
-            st.success('ユーザ登録失敗')
+            st.success('会議室登録失敗')
             st.write(res.status_code)
         st.json(res.json())
