@@ -38,10 +38,16 @@ if page == 'booking':
             'capacity': room['capacity'],
         }
 
+    # TODO
+    # users, rooms が空のリストの場合に先に登録を促す用にユーザに指示
+
     st.write('### 会議室一覧')
-    df_rooms = pd.DataFrame(rooms)
-    df_rooms.columns = ['会議室名', '定員', '会議室 ID']
-    st.table(df_rooms)
+    if rooms:
+        df_rooms = pd.DataFrame(rooms)
+        df_rooms.columns = ['会議室名', '定員', '会議室 ID']
+        st.table(df_rooms)
+    else:
+        st.write('予約可能な会議室はありません')
 
     # 会議室一覧の取得
     url_bookings = URL + '/bookings'
