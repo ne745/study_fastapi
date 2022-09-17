@@ -38,8 +38,10 @@ if page == 'booking':
             'capacity': room['capacity'],
         }
 
-    # TODO
-    # users, rooms が空のリストの場合に先に登録を促す用にユーザに指示
+    if not users:
+        st.error('ユーザを登録してください')
+    if not rooms:
+        st.error('会議室を登録してください')
 
     st.write('### 会議室一覧')
     if rooms:
