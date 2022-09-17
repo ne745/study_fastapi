@@ -116,8 +116,13 @@ if page == 'booking':
             'end_datetime': end_datetime.isoformat()
         }
 
-        # 予約人数の検証
-        if num_people <= capacity:
+        if num_people > capacity:
+            # 予約人数の検証
+            st.error(f'{room_name} の定員は {capacity} 名です．')
+        elif start_time >= end_time:
+            # 開始時刻修了時刻の検証
+            st.error('開始時刻が修了時刻より遅く設定されています．')
+        else:
             st.write('## レスポンス結果')
             res = requests.post(URL + '/bookings', json.dumps(data))
             if res.status_code == 200:
@@ -126,8 +131,6 @@ if page == 'booking':
                 st.success('予約失敗')
                 st.write(res.status_code)
             st.json(res.json())
-        else:
-            st.error(f'{room_name} の定員は {capacity} 名です．')
 
 
 elif page == 'user':
