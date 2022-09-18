@@ -73,6 +73,15 @@ def get_rooms(db: Session, skip: int = 0, limit: int = 100):
 ##############################
 # DELETE #####################
 ##############################
+def delete_booking(db: Session, booking_id: int):
+    # ユーザ削除
+    target_booking = db.query(models.Booking)\
+        .filter(models.Booking.booking_id == booking_id)
+    target_booking.delete()
+    db.commit()
+    return {'message': 'success'}
+
+
 def delete_user(db: Session, user_id: int):
     # ユーザ削除
     target_user = db.query(models.User).filter(models.User.user_id == user_id)

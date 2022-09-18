@@ -78,6 +78,12 @@ async def read_rooms(
 ##############################
 # DELETE #####################
 ##############################
+@app.delete('/bookings')
+async def delete_booking(
+        booking_id: int, db: Session = Depends(get_db)):
+    return crud.delete_booking(db, booking_id)
+
+
 @app.delete('/users')
 async def delete_user(
         user_id: int, db: Session = Depends(get_db)):
