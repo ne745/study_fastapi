@@ -161,8 +161,9 @@ if page == 'booking':
     # 削除
     st.write('## 削除')
     with st.form(key=page + '-delete'):
-        booking_ids = df_bookings['booking_id'].to_list()
-        booking_id = st.selectbox('予約番号', booking_ids)
+        if bookings:
+            booking_ids = df_bookings['booking_id'].to_list()
+            booking_id = st.selectbox('予約番号', booking_ids)
 
         # FIXME ユーザが 0 でも削除ボタンを押すことができるバグを修正
         is_clicked_delete_button = st.form_submit_button(label='予約削除')
