@@ -7,6 +7,9 @@ import streamlit as st
 
 
 URL = 'http://localhost:8000'
+URL_BOOKING = f'{URL}/bookings'
+URL_USERS = f'{URL}/users'
+URL_ROOMS = f'{URL}/rooms'
 
 
 page_name = {
@@ -20,14 +23,12 @@ page_ja = st.sidebar.selectbox(
 page = page_name[page_ja]
 
 # 予約一覧の取得
-url_bookings = URL + '/bookings'
-res = requests.get(url_bookings)
+res = requests.get(URL_BOOKING)
 bookings = res.json()
 df_bookings = pd.DataFrame(bookings)
 
 # ユーザ一覧の取得
-url_users = URL + '/users'
-res = requests.get(url_users)
+res = requests.get(URL_USERS)
 users = res.json()
 # キー: ユーザ名, バリュー: ユーザ ID
 users_name = {}
@@ -35,8 +36,7 @@ for user in users:
     users_name[user['user_name']] = user['user_id']
 
 # 会議室一覧の取得
-url_rooms = URL + '/rooms'
-res = requests.get(url_rooms)
+res = requests.get(URL_ROOMS)
 rooms = res.json()
 # キー: 会議室名, バリュー: 会議室 ID, 定員
 rooms_name = {}
@@ -148,7 +148,7 @@ if page == 'booking':
             st.error('利用可能時間は 9:00 ~ 20:00 になります．')
         else:
             st.write('## レスポンス結果')
-            res = requests.post(URL + '/bookings', json.dumps(data))
+            res = requests.post(URL_BOOKING, json.dumps(data))
             if res.status_code == 200:
                 st.success('予約完了')
             elif res.status_code == 404 \
@@ -169,7 +169,7 @@ if page == 'booking':
 
     if is_clicked_delete_button:
         data = {'booking_id': booking_id}
-        res = requests.delete(URL + '/bookings', params=data)
+        res = requests.delete(URL_BOOKING, params=data)
 
         if res.status_code == 200:
             st.success('予約削除完了')
@@ -192,7 +192,7 @@ elif page == 'user':
 
     if submit_button:
         st.write('## レスポンス結果')
-        res = requests.post(URL + '/users', json.dumps(data))
+        res = requests.post(URL_USERS, json.dumps(data))
 
         if res.status_code == 200:
             st.success('ユーザ登録完了')
@@ -211,7 +211,7 @@ elif page == 'user':
 
     if is_clicked_delete_button:
         data = {'user_id': users_name[user_name]}
-        res = requests.delete(URL + '/users', params=data)
+        res = requests.delete(URL_USERS, params=data)
 
         if res.status_code == 200:
             st.success('ユーザ削除完了')
@@ -236,7 +236,7 @@ elif page == 'room':
 
     if submit_button:
         st.write('## レスポンス結果')
-        res = requests.post(URL + '/rooms', json.dumps(data))
+        res = requests.post(URL_ROOMS, json.dumps(data))
 
         if res.status_code == 200:
             st.success('会議室登録完了')
@@ -255,7 +255,7 @@ elif page == 'room':
 
     if is_clicked_delete_button:
         data = {'room_id': rooms_name[room_name]['room_id']}
-        res = requests.delete(URL + '/rooms', params=data)
+        res = requests.delete(URL_ROOMS, params=data)
 
         if res.status_code == 200:
             st.success('会議室削除完了')
