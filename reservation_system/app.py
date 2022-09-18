@@ -159,25 +159,23 @@ if page == 'booking':
                 st.write(res.status_code)
 
     # 削除
-    st.write('## 削除')
-    with st.form(key=page + '-delete'):
-        if bookings:
+    if bookings:
+        st.write('## 削除')
+        with st.form(key=page + '-delete'):
             booking_ids = df_bookings['booking_id'].to_list()
             booking_id = st.selectbox('予約番号', booking_ids)
+            is_clicked_delete_button = st.form_submit_button(label='予約削除')
 
-        # FIXME ユーザが 0 でも削除ボタンを押すことができるバグを修正
-        is_clicked_delete_button = st.form_submit_button(label='予約削除')
+        if is_clicked_delete_button:
+            data = {'booking_id': booking_id}
+            res = requests.delete(URL_BOOKING, params=data)
 
-    if is_clicked_delete_button:
-        data = {'booking_id': booking_id}
-        res = requests.delete(URL_BOOKING, params=data)
-
-        if res.status_code == 200:
-            st.success('予約削除完了')
-        else:
-            st.error('予約削除失敗')
-            st.write(res.status_code)
-        st.json(res.json())
+            if res.status_code == 200:
+                st.success('予約削除完了')
+            else:
+                st.error('予約削除失敗')
+                st.write(res.status_code)
+            st.json(res.json())
 
 elif page == 'user':
     st.title('ユーザ設定画面')
@@ -203,23 +201,22 @@ elif page == 'user':
         st.json(res.json())
 
     # 削除
-    st.write('## 削除')
-    with st.form(key=page + '-delete'):
-        user_name = st.selectbox('ユーザ名', users_name.keys())
+    if users:
+        st.write('## 削除')
+        with st.form(key=page + '-delete'):
+            user_name = st.selectbox('ユーザ名', users_name.keys())
+            is_clicked_delete_button = st.form_submit_button(label='ユーザ削除')
 
-        # FIXME ユーザが 0 でも削除ボタンを押すことができるバグを修正
-        is_clicked_delete_button = st.form_submit_button(label='ユーザ削除')
+        if is_clicked_delete_button:
+            data = {'user_id': users_name[user_name]}
+            res = requests.delete(URL_USERS, params=data)
 
-    if is_clicked_delete_button:
-        data = {'user_id': users_name[user_name]}
-        res = requests.delete(URL_USERS, params=data)
-
-        if res.status_code == 200:
-            st.success('ユーザ削除完了')
-        else:
-            st.error('ユーザ削除失敗')
-            st.write(res.status_code)
-        st.json(res.json())
+            if res.status_code == 200:
+                st.success('ユーザ削除完了')
+            else:
+                st.error('ユーザ削除失敗')
+                st.write(res.status_code)
+            st.json(res.json())
 
 elif page == 'room':
     st.title('会議室設定画面')
@@ -247,20 +244,19 @@ elif page == 'room':
         st.json(res.json())
 
     # 削除
-    st.write('## 削除')
-    with st.form(key=page + '-delete'):
-        room_name = st.selectbox('会議室名', rooms_name.keys())
+    if rooms:
+        st.write('## 削除')
+        with st.form(key=page + '-delete'):
+            room_name = st.selectbox('会議室名', rooms_name.keys())
+            is_clicked_delete_button = st.form_submit_button(label='会議室削除')
 
-        # FIXME ユーザが 0 でも削除ボタンを押すことができるバグを修正
-        is_clicked_delete_button = st.form_submit_button(label='会議室削除')
+        if is_clicked_delete_button:
+            data = {'room_id': rooms_name[room_name]['room_id']}
+            res = requests.delete(URL_ROOMS, params=data)
 
-    if is_clicked_delete_button:
-        data = {'room_id': rooms_name[room_name]['room_id']}
-        res = requests.delete(URL_ROOMS, params=data)
-
-        if res.status_code == 200:
-            st.success('会議室削除完了')
-        else:
-            st.error('会議室削除失敗')
-            st.write(res.status_code)
-        st.json(res.json())
+            if res.status_code == 200:
+                st.success('会議室削除完了')
+            else:
+                st.error('会議室削除失敗')
+                st.write(res.status_code)
+            st.json(res.json())
