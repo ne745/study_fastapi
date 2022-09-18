@@ -10,7 +10,7 @@ URL = 'http://localhost:8000'
 
 
 page = st.sidebar.selectbox(
-    'Choose your page', ['booking', 'user', 'room'], index=0)
+    'Choose your page', ['booking', 'user', 'room'], index=1)
 
 if page == 'booking':
     st.title('会議室予約画面')
@@ -153,7 +153,10 @@ if page == 'booking':
 
 
 elif page == 'user':
-    st.title('ユーザ登録画面')
+    st.title('ユーザ設定画面')
+
+    # 登録
+    st.write('## 登録')
     with st.form(key=page):
         user_name: str = st.text_input('ユーザ名', max_chars=12)
         data = {
@@ -169,6 +172,38 @@ elif page == 'user':
             st.success('ユーザ登録完了')
         else:
             st.error('ユーザ登録失敗')
+            st.write(res.status_code)
+        st.json(res.json())
+
+    # 削除
+    st.write('## 削除')
+    with st.form(key=page + '-delete'):
+        # TODO ユーザ一覧の取得は予約のときにも行われているので関数化する
+        # ユーザ一覧の取得
+        url_users = URL + '/users'
+        res = requests.get(url_users)
+        users = res.json()
+
+        # キー: ユーザ名, バリュー: ユーザ ID
+        users_name = {}
+        for user in users:
+            users_name[user['user_name']] = user['user_id']
+
+        # ここまで関数化
+
+        user_name = st.selectbox('ユーザ名', users_name.keys())
+
+        # FIXME ユーザが 0 でも削除ボタンを押すことができるバグを修正
+        is_clicked_delete_button = st.form_submit_button(label='ユーザ削除')
+
+    if is_clicked_delete_button:
+        data = {'user_id': users_name[user_name]}
+        res = requests.delete(URL + '/users', params=data)
+
+        if res.status_code == 200:
+            st.success('ユーザ削除完了')
+        else:
+            st.error('ユーザ削除失敗')
             st.write(res.status_code)
         st.json(res.json())
 

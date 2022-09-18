@@ -73,3 +73,12 @@ async def read_rooms(
         skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     rooms = crud.get_rooms(db, skip, limit)
     return rooms
+
+
+##############################
+# DELETE #####################
+##############################
+@app.delete('/users')
+async def delete_user(
+        user_id: int, db: Session = Depends(get_db)):
+    return crud.delete_user(db, user_id)

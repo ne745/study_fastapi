@@ -25,10 +25,15 @@ def main():
     print('=' * 50)
 
     user = {
-        'user_id': 0,
         'user_name': 'hoge'
     }
     res = requests.post(URL + 'users', json.dumps(user))
+    print(res.status_code)
+    res = res.json()
+    print(res)
+
+    user = {'user_id': 1}
+    res = requests.delete(URL + 'users', params=user)
     print(res.status_code)
     res = res.json()
     print(res)

@@ -68,3 +68,14 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
 def get_rooms(db: Session, skip: int = 0, limit: int = 100):
     # 会議室一覧取得
     return db.query(models.Room).offset(skip).limit(limit).all()
+
+
+##############################
+# DELETE #####################
+##############################
+def delete_user(db: Session, user_id: int):
+    # ユーザ削除
+    target_user = db.query(models.User).filter(models.User.user_id == user_id)
+    target_user.delete()
+    db.commit()
+    return {'message': 'success'}
