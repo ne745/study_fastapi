@@ -19,31 +19,36 @@ page_ja = st.sidebar.selectbox(
 
 page = page_name[page_ja]
 
+# 予約一覧の取得
+url_bookings = URL + '/bookings'
+res = requests.get(url_bookings)
+bookings = res.json()
+df_bookings = pd.DataFrame(bookings)
+
+# ユーザ一覧の取得
+url_users = URL + '/users'
+res = requests.get(url_users)
+users = res.json()
+# キー: ユーザ名, バリュー: ユーザ ID
+users_name = {}
+for user in users:
+    users_name[user['user_name']] = user['user_id']
+
+# 会議室一覧の取得
+url_rooms = URL + '/rooms'
+res = requests.get(url_rooms)
+rooms = res.json()
+# キー: 会議室名, バリュー: 会議室 ID, 定員
+rooms_name = {}
+for room in rooms:
+    rooms_name[room['room_name']] = {
+        'room_id': room['room_id'],
+        'capacity': room['capacity'],
+    }
+
+
 if page == 'booking':
     st.title('会議室設定画面')
-
-    # ユーザ一覧の取得
-    url_users = URL + '/users'
-    res = requests.get(url_users)
-    users = res.json()
-
-    # キー: ユーザ名, バリュー: ユーザ ID
-    users_name = {}
-    for user in users:
-        users_name[user['user_name']] = user['user_id']
-
-    # 会議室一覧の取得
-    url_rooms = URL + '/rooms'
-    res = requests.get(url_rooms)
-    rooms = res.json()
-
-    # キー: 会議室名, バリュー: 会議室 ID
-    rooms_name = {}
-    for room in rooms:
-        rooms_name[room['room_name']] = {
-            'room_id': room['room_id'],
-            'capacity': room['capacity'],
-        }
 
     if not users:
         st.error('ユーザを登録してください')
@@ -57,12 +62,6 @@ if page == 'booking':
         st.table(df_rooms)
     else:
         st.write('予約可能な会議室はありません')
-
-    # 予約一覧の取得
-    url_bookings = URL + '/bookings'
-    res = requests.get(url_bookings)
-    bookings = res.json()
-    df_bookings = pd.DataFrame(bookings)
 
     st.write('### 予約一覧')
     if bookings:
@@ -92,7 +91,7 @@ if page == 'booking':
         df_bookings['end_datetime'] = \
             df_bookings['end_datetime'].map(to_datetime)
 
-        df_bookings = df_bookings.rename(columns={
+        df_bookings_ja = df_bookings.rename(columns={
             'user_id': '予約者名',
             'room_id': '会議室名',
             'num_people': '予約人数',
@@ -101,7 +100,7 @@ if page == 'booking':
             'booking_id': '予約番号'
         })
 
-        st.table(df_bookings)
+        st.table(df_bookings_ja)
     else:
         st.write('現在予約はありません')
 
@@ -162,16 +161,7 @@ if page == 'booking':
     # 削除
     st.write('## 削除')
     with st.form(key=page + '-delete'):
-        # TODO ユーザ一覧の取得は予約のときにも行われているので関数化する
-        # ユーザ一覧の取得
-        url_bookings = URL + '/bookings'
-        res = requests.get(url_bookings)
-        bookings = res.json()
-
-        booking_ids = [b['booking_id'] for b in bookings]
-
-        # ここまで関数化
-
+        booking_ids = df_bookings['booking_id'].to_list()
         booking_id = st.selectbox('予約番号', booking_ids)
 
         # FIXME ユーザが 0 でも削除ボタンを押すことができるバグを修正
@@ -214,19 +204,6 @@ elif page == 'user':
     # 削除
     st.write('## 削除')
     with st.form(key=page + '-delete'):
-        # TODO ユーザ一覧の取得は予約のときにも行われているので関数化する
-        # ユーザ一覧の取得
-        url_users = URL + '/users'
-        res = requests.get(url_users)
-        users = res.json()
-
-        # キー: ユーザ名, バリュー: ユーザ ID
-        users_name = {}
-        for user in users:
-            users_name[user['user_name']] = user['user_id']
-
-        # ここまで関数化
-
         user_name = st.selectbox('ユーザ名', users_name.keys())
 
         # FIXME ユーザが 0 でも削除ボタンを押すことができるバグを修正
@@ -271,22 +248,6 @@ elif page == 'room':
     # 削除
     st.write('## 削除')
     with st.form(key=page + '-delete'):
-        # TODO 会議室一覧の取得は予約のときにも行われているので関数化する
-        # 会議室一覧の取得
-        url_rooms = URL + '/rooms'
-        res = requests.get(url_rooms)
-        rooms = res.json()
-
-        # キー: 会議室名, バリュー: 会議室 ID
-        rooms_name = {}
-        for room in rooms:
-            rooms_name[room['room_name']] = {
-                'room_id': room['room_id'],
-                'capacity': room['capacity'],
-            }
-
-        # ここまで関数化
-
         room_name = st.selectbox('会議室名', rooms_name.keys())
 
         # FIXME ユーザが 0 でも削除ボタンを押すことができるバグを修正
