@@ -9,8 +9,15 @@ import streamlit as st
 URL = 'http://localhost:8000'
 
 
-page = st.sidebar.selectbox(
-    'Choose your page', ['booking', 'user', 'room'], index=0)
+page_name = {
+    '予約': 'booking',
+    'ユーザ': 'user',
+    '会議室': 'room',
+}
+page_ja = st.sidebar.selectbox(
+    '設定画面を選んでください', page_name.keys(), index=0)
+
+page = page_name[page_ja]
 
 if page == 'booking':
     st.title('会議室設定画面')
