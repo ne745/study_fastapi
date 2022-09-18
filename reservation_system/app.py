@@ -10,7 +10,7 @@ URL = 'http://localhost:8000'
 
 
 page = st.sidebar.selectbox(
-    'Choose your page', ['booking', 'user', 'room'], index=1)
+    'Choose your page', ['booking', 'user', 'room'], index=2)
 
 if page == 'booking':
     st.title('会議室予約画面')
@@ -208,7 +208,10 @@ elif page == 'user':
         st.json(res.json())
 
 elif page == 'room':
-    st.title('会議室登録画面')
+    st.title('会議室設定画面')
+
+    # 登録
+    st.write('## 登録')
     with st.form(key=page):
         room_name: str = st.text_input('会議室名', max_chars=12)
         capacity: int = st.number_input('定員', step=1, min_value=1)
@@ -226,5 +229,40 @@ elif page == 'room':
             st.success('会議室登録完了')
         else:
             st.error('会議室登録失敗')
+            st.write(res.status_code)
+        st.json(res.json())
+
+    # 削除
+    st.write('## 削除')
+    with st.form(key=page + '-delete'):
+        # TODO 会議室一覧の取得は予約のときにも行われているので関数化する
+        # 会議室一覧の取得
+        url_rooms = URL + '/rooms'
+        res = requests.get(url_rooms)
+        rooms = res.json()
+
+        # キー: 会議室名, バリュー: 会議室 ID
+        rooms_name = {}
+        for room in rooms:
+            rooms_name[room['room_name']] = {
+                'room_id': room['room_id'],
+                'capacity': room['capacity'],
+            }
+
+        # ここまで関数化
+
+        room_name = st.selectbox('会議室名', rooms_name.keys())
+
+        # FIXME ユーザが 0 でも削除ボタンを押すことができるバグを修正
+        is_clicked_delete_button = st.form_submit_button(label='会議室削除')
+
+    if is_clicked_delete_button:
+        data = {'room_id': rooms_name[room_name]['room_id']}
+        res = requests.delete(URL + '/rooms', params=data)
+
+        if res.status_code == 200:
+            st.success('会議室削除完了')
+        else:
+            st.error('会議室削除失敗')
             st.write(res.status_code)
         st.json(res.json())

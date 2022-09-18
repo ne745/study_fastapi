@@ -79,3 +79,11 @@ def delete_user(db: Session, user_id: int):
     target_user.delete()
     db.commit()
     return {'message': 'success'}
+
+
+def delete_room(db: Session, room_id: int):
+    # 会議室削除
+    target_room = db.query(models.Room).filter(models.Room.room_id == room_id)
+    target_room.delete()
+    db.commit()
+    return {'message': 'success'}
