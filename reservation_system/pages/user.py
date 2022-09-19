@@ -74,7 +74,12 @@ def delete_user():
             st.json(res.json())
 
 
-st.title('ユーザ設定画面')
+def main():
+    st.title('ユーザ設定画面')
 
-create_user()
-delete_user()
+    create_user()
+    delete_user()
+
+
+if __name__ == '__main__':
+    main()

@@ -81,7 +81,12 @@ def delete_room():
             st.json(res.json())
 
 
-st.title('会議室設定画面')
+def main():
+    st.title('会議室設定画面')
 
-create_room()
-delete_room()
+    create_room()
+    delete_room()
+
+
+if __name__ == '__main__':
+    main()
