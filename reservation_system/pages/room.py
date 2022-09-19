@@ -61,8 +61,6 @@ def delete_room():
     # 削除
     rooms_name = generate_rooms_name()
 
-    st.write(rooms_name)
-
     if rooms_name:
         st.write('## 削除')
         with st.form(key=PAGE + '-DELETE'):

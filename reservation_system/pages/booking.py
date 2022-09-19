@@ -167,5 +167,11 @@ def delete_booking():
             st.json(res.json())
 
 
-st.title('会議室設定画面')
-create_booking()
+def main():
+    st.title('予約設定画面')
+    create_booking()
+    delete_booking()
+
+
+if __name__ == '__main__':
+    main()
