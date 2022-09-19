@@ -178,45 +178,7 @@ if page == 'booking':
             st.json(res.json())
 
 elif page == 'user':
-    st.title('ユーザ設定画面')
-
-    # 登録
-    st.write('## 登録')
-    with st.form(key=page):
-        user_name: str = st.text_input('ユーザ名', max_chars=12)
-        data = {
-            'user_name': user_name
-        }
-        submit_button = st.form_submit_button(label='ユーザ登録')
-
-    if submit_button:
-        st.write('## レスポンス結果')
-        res = requests.post(URL_USERS, json.dumps(data))
-
-        if res.status_code == 200:
-            st.success('ユーザ登録完了')
-        else:
-            st.error('ユーザ登録失敗')
-            st.write(res.status_code)
-        st.json(res.json())
-
-    # 削除
-    if users:
-        st.write('## 削除')
-        with st.form(key=page + '-delete'):
-            user_name = st.selectbox('ユーザ名', users_name.keys())
-            is_clicked_delete_button = st.form_submit_button(label='ユーザ削除')
-
-        if is_clicked_delete_button:
-            data = {'user_id': users_name[user_name]}
-            res = requests.delete(URL_USERS, params=data)
-
-            if res.status_code == 200:
-                st.success('ユーザ削除完了')
-            else:
-                st.error('ユーザ削除失敗')
-                st.write(res.status_code)
-            st.json(res.json())
+    pass
 
 elif page == 'room':
     st.title('会議室設定画面')
