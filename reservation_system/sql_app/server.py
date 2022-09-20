@@ -76,6 +76,15 @@ async def read_rooms(
 
 
 ##############################
+# UPDATE #####################
+##############################
+@app.put('/users')
+async def update_user(
+        user: User, db: Session = Depends(get_db)):
+    return crud.update_user(db, user)
+
+
+##############################
 # DELETE #####################
 ##############################
 @app.delete('/bookings')

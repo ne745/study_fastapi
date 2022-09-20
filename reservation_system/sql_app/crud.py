@@ -71,6 +71,20 @@ def get_rooms(db: Session, skip: int = 0, limit: int = 100):
 
 
 ##############################
+# UPDATE #####################
+##############################
+def update_user(db: Session, user: schemas.User):
+    # ユーザ登録
+    target_user = db.query(models.User)\
+        .filter(models.User.user_id == user.user_id)
+    target_user.update({
+        models.User.user_name: user.user_name
+    })
+    db.commit()
+    return {'message': 'success'}
+
+
+##############################
 # DELETE #####################
 ##############################
 def delete_booking(db: Session, booking_id: int):

@@ -52,6 +52,32 @@ def create_user():
         st.json(res.json())
 
 
+def update_user():
+    users_name = generate_user_name()
+
+    if users_name:
+        st.write('## 更新')
+        with st.form(key=PAGE + '-update'):
+            target_user_name = st.selectbox('ユーザ名', users_name.keys())
+            new_user_name = st.text_input(
+                'ユーザ名', max_chars=12)
+            is_clicked_update_button = st.form_submit_button(label='ユーザ更新')
+
+        if is_clicked_update_button:
+            data = {
+                'user_id': users_name[target_user_name],
+                'user_name': new_user_name
+            }
+            res = requests.put(URL_USER, data=json.dumps(data))
+
+            if res.status_code == 200:
+                st.success('ユーザ更新完了')
+            else:
+                st.error('ユーザ更新失敗')
+                st.write(res.status_code)
+            st.json(res.json())
+
+
 def delete_user():
     # 削除
     users_name = generate_user_name()
@@ -78,6 +104,7 @@ def main():
     st.title('ユーザ設定画面')
 
     create_user()
+    update_user()
     delete_user()
 
 
