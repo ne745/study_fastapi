@@ -38,13 +38,13 @@ def create_booking():
     if not rooms_name:
         st.error('会議室を登録してください')
 
+    if not (users_name and rooms_name):
+        return
+
     st.write('### 会議室一覧')
-    if rooms_name:
-        df_rooms = pd.DataFrame(rooms)
-        df_rooms.columns = ['会議室名', '定員', '会議室 ID']
-        st.table(df_rooms)
-    else:
-        st.write('予約可能な会議室はありません')
+    df_rooms = pd.DataFrame(rooms)
+    df_rooms.columns = ['会議室名', '定員', '会議室 ID']
+    st.table(df_rooms)
 
     st.write('### 予約一覧')
     bookings = read_booking()
