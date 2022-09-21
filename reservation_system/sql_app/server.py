@@ -84,6 +84,12 @@ async def update_user(
     return crud.update_user(db, user)
 
 
+@app.put('/rooms')
+async def update_room(
+        room: Room, db: Session = Depends(get_db)):
+    return crud.update_room(db, room)
+
+
 ##############################
 # DELETE #####################
 ##############################

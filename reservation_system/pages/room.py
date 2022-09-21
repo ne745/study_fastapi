@@ -57,6 +57,36 @@ def create_room():
         st.json(res.json())
 
 
+def update_room():
+    rooms_name = generate_rooms_name()
+
+    if rooms_name:
+        st.write('## 更新')
+        with st.form(key=PAGE + '-update'):
+            target_room_name = st.selectbox('会議室名', rooms_name.keys())
+            new_room_name = st.text_input(
+                '会議室名', value=target_room_name, max_chars=12)
+            new_capacity = st.number_input(
+                '定員', value=rooms_name[target_room_name]['capacity'],
+                step=1, min_value=1)
+            is_clicked_update_button = st.form_submit_button(label='会議室更新')
+
+        if is_clicked_update_button:
+            data = {
+                'room_id': rooms_name[target_room_name]['room_id'],
+                'room_name': new_room_name,
+                'capacity': new_capacity
+            }
+            res = requests.put(URL_ROOM, data=json.dumps(data))
+
+            if res.status_code == 200:
+                st.success('会議室更新完了')
+            else:
+                st.error('会議室更新失敗')
+                st.write(res.status_code)
+            st.json(res.json())
+
+
 def delete_room():
     # 削除
     rooms_name = generate_rooms_name()
@@ -83,6 +113,7 @@ def main():
     st.title('会議室設定画面')
 
     create_room()
+    update_room()
     delete_room()
 
 

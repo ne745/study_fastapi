@@ -84,6 +84,18 @@ def update_user(db: Session, user: schemas.User):
     return {'message': 'success'}
 
 
+def update_room(db: Session, room: schemas.Room):
+    # 会議室更新
+    target_room = db.query(models.Room)\
+        .filter(models.Room.room_id == room.room_id)
+    target_room.update({
+        models.Room.room_name: room.room_name,
+        models.Room.capacity: room.capacity
+    })
+    db.commit()
+    return {'message': 'success'}
+
+
 ##############################
 # DELETE #####################
 ##############################
