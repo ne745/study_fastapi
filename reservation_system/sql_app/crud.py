@@ -73,6 +73,31 @@ def get_rooms(db: Session, skip: int = 0, limit: int = 100):
 ##############################
 # UPDATE #####################
 ##############################
+def update_booking(db: Session, booking: schemas.Booking):
+    # 予約更新
+    # 既存の予約と重複があるか検証
+    db_booked = db.query(models.Booking).\
+        filter(models.Booking.room_id == booking.room_id).\
+        filter(models.Booking.end_datetime > booking.start_datetime).\
+        filter(models.Booking.start_datetime < booking.end_datetime).\
+        all()
+
+    if not db_booked:
+        target_booking = db.query(models.Booking)\
+            .filter(models.Booking.booking_id == booking.booking_id)
+        target_booking.update({
+            models.Booking.user_id: booking.user_id,
+            models.Booking.room_id: booking.room_id,
+            models.Booking.num_people: booking.num_people,
+            models.Booking.start_datetime: booking.start_datetime,
+            models.Booking.end_datetime: booking.end_datetime
+        })
+        db.commit()
+        return {'message': 'success'}
+    else:
+        raise HTTPException(status_code=404, detail='Already booked')
+
+
 def update_user(db: Session, user: schemas.User):
     # ユーザ登録
     target_user = db.query(models.User)\
