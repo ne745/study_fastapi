@@ -46,7 +46,7 @@ def create_booking():
         start_time = st.time_input(
             '開始時刻', value=datetime.time(hour=9, minute=0))
         end_time = st.time_input(
-            '修了時刻', value=datetime.time(hour=20, minute=0))
+            '終了時刻', value=datetime.time(hour=20, minute=0))
         start_datetime = datetime.datetime(
             year=date.year, month=date.month, day=date.day,
             hour=start_time.hour, minute=start_time.minute
@@ -73,8 +73,8 @@ def create_booking():
             # 予約人数の検証
             st.error(f'{room_name} の定員は {capacity} 名です．')
         elif start_time >= end_time:
-            # 開始時刻修了時刻の検証
-            st.error('開始時刻が修了時刻より遅く設定されています．')
+            # 開始時刻終了時刻の検証
+            st.error('開始時刻が終了時刻より遅く設定されています．')
         elif start_time < datetime.time(hour=9, minute=0):
             st.error('利用可能時間は 9:00 ~ 20:00 になります．')
         elif end_time > datetime.time(hour=20, minute=0):
@@ -258,6 +258,7 @@ def delete_booking():
 
 def main():
     st.title('予約設定画面')
+
     create_booking()
     update_booking()
     delete_booking()

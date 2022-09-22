@@ -125,7 +125,7 @@ def update_room(db: Session, room: schemas.Room):
 # DELETE #####################
 ##############################
 def delete_booking(db: Session, booking_id: int):
-    # ユーザ削除
+    # 予約削除
     target_booking = db.query(models.Booking)\
         .filter(models.Booking.booking_id == booking_id)
     target_booking.delete()
