@@ -14,22 +14,6 @@ PAGE = config['WEB_SERVEER']['user']
 URL_USER = f'http://{HOST}:{PORT}/{PAGE}'
 
 
-def read_user():
-    # ユーザ一覧の取得
-    res = requests.get(URL_USER)
-    users = res.json()
-    return users
-
-
-def generate_user_name():
-    users = read_user()
-    # キー: ユーザ名, バリュー: ユーザ ID
-    users_name = {}
-    for user in users:
-        users_name[user['user_name']] = user['user_id']
-    return users_name
-
-
 def create_user():
     # 登録
     st.write('## 登録')
@@ -50,6 +34,22 @@ def create_user():
             st.error('ユーザ登録失敗')
             st.write(res.status_code)
         st.json(res.json())
+
+
+def read_user():
+    # ユーザ一覧の取得
+    res = requests.get(URL_USER)
+    users = res.json()
+    return users
+
+
+def generate_user_name():
+    users = read_user()
+    # キー: ユーザ名, バリュー: ユーザ ID
+    users_name = {}
+    for user in users:
+        users_name[user['user_name']] = user['user_id']
+    return users_name
 
 
 def update_user():

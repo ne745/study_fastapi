@@ -14,25 +14,6 @@ PAGE = config['WEB_SERVEER']['room']
 URL_ROOM = f'http://{HOST}:{PORT}/{PAGE}'
 
 
-def read_room():
-    # 会議室一覧の取得
-    res = requests.get(URL_ROOM)
-    rooms = res.json()
-    return rooms
-
-
-def generate_rooms_name():
-    rooms = read_room()
-    # キー: 会議室名, バリュー: 会議室 ID, 定員
-    rooms_name = {}
-    for room in rooms:
-        rooms_name[room['room_name']] = {
-            'room_id': room['room_id'],
-            'capacity': room['capacity'],
-        }
-    return rooms_name
-
-
 def create_room():
     # 登録
     st.write('## 登録')
@@ -55,6 +36,25 @@ def create_room():
             st.error('会議室登録失敗')
             st.write(res.status_code)
         st.json(res.json())
+
+
+def read_room():
+    # 会議室一覧の取得
+    res = requests.get(URL_ROOM)
+    rooms = res.json()
+    return rooms
+
+
+def generate_rooms_name():
+    rooms = read_room()
+    # キー: 会議室名, バリュー: 会議室 ID, 定員
+    rooms_name = {}
+    for room in rooms:
+        rooms_name[room['room_name']] = {
+            'room_id': room['room_id'],
+            'capacity': room['capacity'],
+        }
+    return rooms_name
 
 
 def update_room():
