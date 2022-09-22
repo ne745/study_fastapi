@@ -151,11 +151,10 @@ def update_booking():
     st.table(df_bookings_ja)
 
     booking_ids = df_bookings_ja['予約番号'].to_list()
-    booking_id = st.selectbox('予約番号', booking_ids)
-
-    old_booking = df_bookings_ja[df_bookings_ja['予約番号'] == booking_id]
-    old_booking_idx = df_bookings_ja['予約番号'].to_list().index(booking_id)
+    booking_id = st.selectbox('更新予約番号', booking_ids)
     with st.form(key=PAGE + '-update'):
+        old_booking = df_bookings_ja[df_bookings_ja['予約番号'] == booking_id]
+        old_booking_idx = df_bookings_ja['予約番号'].to_list().index(booking_id)
         old_start_datetime = datetime.datetime.strptime(
             old_booking['開始時刻'].iloc[0], '%Y/%m/%d %H:%M')
         old_end_datetime = datetime.datetime.strptime(
@@ -235,25 +234,31 @@ def update_booking():
 
 def delete_booking():
     bookings = read_booking()
-    df_bookings = pd.DataFrame(bookings)
+    if not bookings:
+        return
 
-    if bookings:
-        st.write('## 削除')
-        with st.form(key=PAGE + '-delete'):
-            booking_ids = df_bookings['booking_id'].to_list()
-            booking_id = st.selectbox('予約番号', booking_ids)
-            is_clicked_delete_button = st.form_submit_button(label='予約削除')
+    st.write('## 削除')
+    df_bookings_ja = generate_booking_table()
+    st.table(df_bookings_ja)
 
-        if is_clicked_delete_button:
-            data = {'booking_id': booking_id}
-            res = requests.delete(URL_BOOKING, params=data)
+    booking_ids = df_bookings_ja['予約番号'].to_list()
+    booking_id = st.selectbox('削除予約番号', booking_ids)
 
-            if res.status_code == 200:
-                st.success('予約削除完了')
-            else:
-                st.error('予約削除失敗')
-                st.write(res.status_code)
-            st.json(res.json())
+    with st.form(key=PAGE + '-delete'):
+        st.write('### 削除対象予約')
+        st.table(df_bookings_ja[booking_id == df_bookings_ja['予約番号']])
+        is_clicked_delete_button = st.form_submit_button(label='予約削除')
+
+    if is_clicked_delete_button:
+        data = {'booking_id': booking_id}
+        res = requests.delete(URL_BOOKING, params=data)
+
+        if res.status_code == 200:
+            st.success('予約削除完了')
+        else:
+            st.error('予約削除失敗')
+            st.write(res.status_code)
+        st.json(res.json())
 
 
 def main():
