@@ -6,7 +6,7 @@ import pandas as pd
 import requests
 import streamlit as st
 
-from pages.room import generate_rooms_name, read_room
+from pages.room import generate_rooms_name, read_room, generate_room_table
 from pages.user import generate_user_name, read_user
 
 
@@ -32,9 +32,7 @@ def create_booking():
         return
 
     st.write('### 会議室一覧')
-    rooms = read_room()
-    df_rooms = pd.DataFrame(rooms)
-    df_rooms.columns = ['会議室名', '定員', '会議室 ID']
+    df_rooms = generate_room_table()
     st.table(df_rooms)
 
     st.write('## 予約')
