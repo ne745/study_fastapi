@@ -128,9 +128,10 @@ def delete_room():
 def main():
     st.title('会議室設定画面')
 
-    st.write('### 会議室一覧')
     df_rooms = generate_room_table()
-    st.table(df_rooms)
+    if df_rooms is not None:
+        st.write('### 会議室一覧')
+        st.table(df_rooms)
     create_room()
     update_room()
     delete_room()
