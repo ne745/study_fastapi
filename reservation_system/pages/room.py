@@ -1,6 +1,8 @@
 import configparser
 import json
 
+import pandas as pd
+
 import requests
 import streamlit as st
 
@@ -55,6 +57,17 @@ def generate_rooms_name():
             'capacity': room['capacity'],
         }
     return rooms_name
+
+
+def display_rooms_table():
+    rooms = read_room()
+    if not rooms:
+        return
+
+    st.write('### 会議室一覧')
+    df_rooms = pd.DataFrame(rooms)
+    df_rooms.columns = ['会議室名', '定員', '会議室 ID']
+    st.table(df_rooms)
 
 
 def update_room():
@@ -116,6 +129,7 @@ def delete_room():
 def main():
     st.title('会議室設定画面')
 
+    display_rooms_table()
     create_room()
     update_room()
     delete_room()
