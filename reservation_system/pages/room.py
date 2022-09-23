@@ -60,53 +60,57 @@ def generate_rooms_name():
 def update_room():
     rooms_name = generate_rooms_name()
 
-    if rooms_name:
-        st.write('## 更新')
-        with st.form(key=PAGE + '-update'):
-            target_room_name = st.selectbox('会議室名', rooms_name.keys())
-            new_room_name = st.text_input(
-                '会議室名', value=target_room_name, max_chars=12)
-            new_capacity = st.number_input(
-                '定員', value=rooms_name[target_room_name]['capacity'],
-                step=1, min_value=1)
-            is_clicked_update_button = st.form_submit_button(label='会議室更新')
+    if not rooms_name:
+        return
 
-        if is_clicked_update_button:
-            data = {
-                'room_id': rooms_name[target_room_name]['room_id'],
-                'room_name': new_room_name,
-                'capacity': new_capacity
-            }
-            res = requests.put(URL_ROOM, data=json.dumps(data))
+    st.write('## 更新')
+    target_room_name = st.selectbox('更新会議室名', rooms_name.keys())
+    with st.form(key=PAGE + '-update'):
+        new_room_name = st.text_input(
+            '会議室名', value=target_room_name, max_chars=12)
+        new_capacity = st.number_input(
+            '定員', value=rooms_name[target_room_name]['capacity'],
+            step=1, min_value=1)
+        is_clicked_update_button = st.form_submit_button(label='会議室更新')
 
-            if res.status_code == 200:
-                st.success('会議室更新完了')
-            else:
-                st.error('会議室更新失敗')
-                st.write(res.status_code)
-            st.json(res.json())
+    if is_clicked_update_button:
+        data = {
+            'room_id': rooms_name[target_room_name]['room_id'],
+            'room_name': new_room_name,
+            'capacity': new_capacity
+        }
+        res = requests.put(URL_ROOM, data=json.dumps(data))
+
+        if res.status_code == 200:
+            st.success('会議室更新完了')
+        else:
+            st.error('会議室更新失敗')
+            st.write(res.status_code)
+        st.json(res.json())
 
 
 def delete_room():
     # 削除
     rooms_name = generate_rooms_name()
 
-    if rooms_name:
-        st.write('## 削除')
-        with st.form(key=PAGE + '-DELETE'):
-            room_name = st.selectbox('会議室名', rooms_name.keys())
-            is_clicked_delete_button = st.form_submit_button(label='会議室削除')
+    if not rooms_name:
+        return
 
-        if is_clicked_delete_button:
-            data = {'room_id': rooms_name[room_name]['room_id']}
-            res = requests.delete(URL_ROOM, params=data)
+    st.write('## 削除')
+    room_name = st.selectbox('削除会議室名', rooms_name.keys())
+    with st.form(key=PAGE + '-DELETE'):
+        is_clicked_delete_button = st.form_submit_button(label='会議室削除')
 
-            if res.status_code == 200:
-                st.success('会議室削除完了')
-            else:
-                st.error('会議室削除失敗')
-                st.write(res.status_code)
-            st.json(res.json())
+    if is_clicked_delete_button:
+        data = {'room_id': rooms_name[room_name]['room_id']}
+        res = requests.delete(URL_ROOM, params=data)
+
+        if res.status_code == 200:
+            st.success('会議室削除完了')
+        else:
+            st.error('会議室削除失敗')
+            st.write(res.status_code)
+        st.json(res.json())
 
 
 def main():
