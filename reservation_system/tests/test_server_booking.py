@@ -114,4 +114,14 @@ class TestBooking():
             res.status_code,
             res_json['message']
         )
+
+        user = {
+            'user_id': 1,
+        }
+        res = requests.delete(URL + 'users', params=user)
+        room = {
+            'room_id': 1,
+        }
+        res = requests.delete(URL + 'rooms', params=room)
+
         assert expected == actual
