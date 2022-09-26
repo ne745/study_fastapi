@@ -30,6 +30,9 @@ def create_user():
 
         if res.status_code == 200:
             st.success('ユーザ登録完了')
+        elif res.status_code == 404 \
+                and res.json()['detail'] == 'Already used':
+            st.error(f'ユーザ名 {user_name} は既に使用されています．')
         else:
             st.error('ユーザ登録失敗')
             st.write(res.status_code)

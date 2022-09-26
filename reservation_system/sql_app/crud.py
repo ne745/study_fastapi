@@ -36,6 +36,11 @@ def create_booking(db: Session, booking: schemas.Booking):
 
 def create_user(db: Session, user: schemas.User):
     # ユーザ登録
+    db_used_user_name = db.query(models.User).\
+        filter(models.User.user_name == user.user_name)
+    if db_used_user_name:
+        raise HTTPException(status_code=404, detail='Already used')
+
     db_user = models.User(user_name=user.user_name)
     db.add(db_user)
     db.commit()
@@ -45,6 +50,11 @@ def create_user(db: Session, user: schemas.User):
 
 def create_room(db: Session, room: schemas.Room):
     # 会議室登録
+    db_used_room_name = db.query(models.Room).\
+        filter(models.Room.room_name == room.room_name)
+    if db_used_room_name:
+        raise HTTPException(status_code=404, detail='Already used')
+
     db_room = models.Room(room_name=room.room_name, capacity=room.capacity)
     db.add(db_room)
     db.commit()

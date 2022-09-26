@@ -34,6 +34,9 @@ def create_room():
 
         if res.status_code == 200:
             st.success('会議室登録完了')
+        elif res.status_code == 404 \
+                and res.json()['detail'] == 'Already used':
+            st.error(f'会議室名 {room_name} は既に使用されています．')
         else:
             st.error('会議室登録失敗')
             st.write(res.status_code)
