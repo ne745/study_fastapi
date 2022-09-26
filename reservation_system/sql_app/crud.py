@@ -55,19 +55,19 @@ def create_room(db: Session, room: schemas.Room):
 ##############################
 # READ #######################
 ##############################
-def get_bookings(db: Session, skip: int = 0, limit: int = 100):
+def get_bookings(db: Session):
     # 予約一覧取得
-    return db.query(models.Booking).offset(skip).limit(limit).all()
+    return db.query(models.Booking).all()
 
 
-def get_users(db: Session, skip: int = 0, limit: int = 100):
+def get_users(db: Session):
     # ユーザ一覧取得
-    return db.query(models.User).offset(skip).limit(limit).all()
+    return db.query(models.User).all()
 
 
-def get_rooms(db: Session, skip: int = 0, limit: int = 100):
+def get_rooms(db: Session):
     # 会議室一覧取得
-    return db.query(models.Room).offset(skip).limit(limit).all()
+    return db.query(models.Room).all()
 
 
 ##############################

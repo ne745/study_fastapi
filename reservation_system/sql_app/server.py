@@ -55,24 +55,18 @@ async def create_room(
 # READ #######################
 ##############################
 @app.get('/bookings', response_model=List[Booking])
-async def read_bookings(
-        skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    bookings = crud.get_bookings(db, skip, limit)
-    return bookings
+async def read_bookings(db: Session = Depends(get_db)):
+    return crud.get_bookings(db)
 
 
 @app.get('/users', response_model=List[User])
-async def read_users(
-        skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    users = crud.get_users(db, skip, limit)
-    return users
+async def read_users(db: Session = Depends(get_db)):
+    return crud.get_users(db)
 
 
 @app.get('/rooms', response_model=List[Room])
-async def read_rooms(
-        skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    rooms = crud.get_rooms(db, skip, limit)
-    return rooms
+async def read_rooms(db: Session = Depends(get_db)):
+    return crud.get_rooms(db)
 
 
 ##############################
