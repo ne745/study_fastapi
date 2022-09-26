@@ -77,6 +77,7 @@ def update_booking(db: Session, booking: schemas.Booking):
     # 予約更新
     # 既存の予約と重複があるか検証
     db_booked = db.query(models.Booking).\
+        filter(models.Booking.booking_id != booking.booking_id).\
         filter(models.Booking.room_id == booking.room_id).\
         filter(models.Booking.end_datetime > booking.start_datetime).\
         filter(models.Booking.start_datetime < booking.end_datetime).\
