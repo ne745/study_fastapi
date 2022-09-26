@@ -138,6 +138,12 @@ def delete_user(db: Session, user_id: int):
     target_user = db.query(models.User).filter(models.User.user_id == user_id)
     target_user.delete()
     db.commit()
+
+    # 削除するユーザが登録している予約も削除
+    target_booking = db.query(models.Booking)\
+        .filter(models.Booking.user_id == user_id)
+    target_booking.delete()
+
     return {'message': 'success'}
 
 
@@ -145,5 +151,11 @@ def delete_room(db: Session, room_id: int):
     # 会議室削除
     target_room = db.query(models.Room).filter(models.Room.room_id == room_id)
     target_room.delete()
+
+    # 削除するユーザが登録している予約も削除
+    target_booking = db.query(models.Booking)\
+        .filter(models.Booking.room_id == room_id)
+    target_booking.delete()
+
     db.commit()
     return {'message': 'success'}
