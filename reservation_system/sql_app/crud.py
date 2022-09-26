@@ -148,13 +148,13 @@ def delete_user(db: Session, user_id: int):
     # ユーザ削除
     target_user = db.query(models.User).filter(models.User.user_id == user_id)
     target_user.delete()
-    db.commit()
 
     # 削除するユーザが登録している予約も削除
     target_booking = db.query(models.Booking)\
         .filter(models.Booking.user_id == user_id)
     target_booking.delete()
 
+    db.commit()
     return {'message': 'success'}
 
 
